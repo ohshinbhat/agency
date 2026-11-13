@@ -1,0 +1,78 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+const deliveryEnabled = process.env.NETLIFY === 'true';
+---
+<SiteLayout title="Contact — First Run" description="Tell First Run about your brand, design, or launch project." contact>
+  <section class="contact-section wrap" aria-labelledby="contact-title">
+    <div class="contact-intro">
+      <p class="eyebrow"><span class="signal" aria-hidden="true"></span> Project inquiries</p>
+      <h1 id="contact-title">Start a<br /><em>project.</em></h1>
+      <p>Tell us what you’re working on and when you’d like to get it out into the world.</p>
+      <div class="contact-track" aria-hidden="true"></div>
+    </div>
+    <form class="contact-form" name="project-inquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-delivery={deliveryEnabled}>
+      <input type="hidden" name="form-name" value="project-inquiry" />
+      <p hidden><label>Leave this field empty <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
+      {!deliveryEnabled && <p class="form-note">Preview form. Email delivery will be available when the site is connected to Netlify Forms.</p>}
+      <div class="form-row">
+        <label>Your name <input name="name" autocomplete="name" required maxlength="100" placeholder="Full name" /></label>
+        <label>Email address <input name="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@company.com" /></label>
+      </div>
+      <div class="form-row">
+        <label>Company <small>(optional)</small><input name="company" autocomplete="organization" maxlength="120" placeholder="Company name" /></label>
+        <label>What do you need?
+          <select name="service" required>
+            <option value="" disabled selected>Select a service</option>
+            <option>Brand strategy</option>
+            <option>Identity &amp; web</option>
+            <option>Launch creative</option>
+            <option>Something else</option>
+          </select>
+        </label>
+      </div>
+      <div class="form-row">
+        <label>Budget <small>(optional)</small><input name="budget" maxlength="80" placeholder="Estimated range" /></label>
+        <label>Timing <small>(optional)</small><input name="timing" maxlength="80" placeholder="Target launch date" /></label>
+      </div>
+      <label>Tell us about your project
+        <textarea name="message" required maxlength="3000" rows="5" placeholder="What are you building?"></textarea>
+      </label>
+      <button class="button button-red" type="submit">{deliveryEnabled ? 'Send inquiry' : 'Check inquiry'} <span aria-hidden="true">↗</span></button>
+      <p class="form-status" role="status"></p>
+    </form>
+  </section>
+</SiteLayout>
+<script>
+  const form = document.querySelector<HTMLFormElement>('.contact-form');
+  const status = form?.querySelector<HTMLElement>('.form-status');
+  const button = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+  if (form && status && button) {
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+
+      if (form.dataset.delivery !== 'true') {
+        status.textContent = 'Your inquiry passed validation. Preview mode does not send it.';
+        return;
+      }
+
+      button.disabled = true;
+      status.textContent = 'Sending your inquiry…';
+
+      try {
+        const body = new URLSearchParams();
+        new FormData(form).forEach((value, key) => body.append(key, String(value)));
+        const response = await fetch('/', { method: 'POST', body });
+        if (!response.ok) throw new Error('Submission failed');
+
+        form.reset();
+        status.textContent = 'Thanks. Your inquiry has been sent.';
+      } catch {
+        status.textContent = 'Your inquiry could not be sent. Please try again.';
+      } finally {
+        button.disabled = false;
+      }
+    });
+  }
+</script>
