@@ -1,4 +1,4 @@
-import * as THREE from '/vendor/three.module.js';
+import * as THREE from 'three';
 import { makeAscii, makeSoftwareRenderer } from './ascii.js';
 import { makeRunners, poseRunner } from './runner.js';
 

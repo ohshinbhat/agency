@@ -1,4 +1,4 @@
-import { Color, Matrix4, Vector3 } from '/vendor/three.module.js';
+import { Color, Matrix4, Vector3 } from 'three';
 
 const glyphs = ' .,:-+=*#%@';
 const inkColors = [
