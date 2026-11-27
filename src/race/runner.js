@@ -1,4 +1,4 @@
-import * as THREE from '/vendor/three.module.js';
+import * as THREE from 'three';
 import { joints, strides } from './strides.js';
 
 const { clamp, lerp: mix } = THREE.MathUtils;

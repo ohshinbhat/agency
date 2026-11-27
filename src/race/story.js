@@ -1,3 +1,4 @@
+import { gsap } from 'gsap';
 import { createRace } from './race.js';
 
 const stage = document.querySelector('.film-stage');
@@ -32,7 +33,7 @@ try {
 }
 
 if (race) {
-  const playback = window.gsap.to(playhead, {
+  const playback = gsap.to(playhead, {
     progress: 1,
     duration: sceneCount * secondsPerScene,
     repeat: -1,
